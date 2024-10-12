@@ -2,6 +2,17 @@ import os
 import frontmatter
 import yaml
 
+def get_parent_or_filename(filepath):
+    # Get the parent directory of the file
+    parent_dir = os.path.basename(os.path.dirname(filepath))
+    
+    # If the parent is 'built', return the filename without extension
+    if parent_dir == 'built':
+        return os.path.splitext(os.path.basename(filepath))[0]
+    
+    # Otherwise, return the immediate parent directory
+    return parent_dir
+
 class MarkdownFileHandler:
     def __init__(self, filepath):
         """
@@ -9,7 +20,7 @@ class MarkdownFileHandler:
         """
         self.filepath = filepath
         self.item = self.Item()  # An instance of the nested Item class
-        self._extract_directories()
+        self._extract_directories(filepath)
         self._load_front_matter()
         self._load_project_config()
 
@@ -17,17 +28,10 @@ class MarkdownFileHandler:
         """ A nested class to store attributes such as cdir, cclass, front-matter, etc. """
         pass
 
-    def _extract_directories(self):
+    def _extract_directories(self,filepath):
         """ Extracts the cdir and sets cdir and cclass to 'blogs' if file is in /content/blogs. """
-        full_dir = os.path.dirname(self.filepath)
-        
-        # Check if the path matches /content/blogs and adjust cdir and cclass
-        if '/content/blogs' in full_dir:
-            self.item.cdir = 'blogs'
-            self.item.cclass = 'blogs'
-        else:
-            self.item.cdir = full_dir
-            self.item.cclass = full_dir
+        self.item.cdir = get_parent_or_filename(filepath)
+        self.item.cclass = get_parent_or_filename(filepath)
 
     def _load_front_matter(self):
         """ Loads the front-matter and content from the markdown file into the item. """
