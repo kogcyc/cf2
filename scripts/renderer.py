@@ -25,11 +25,10 @@ def convert_markdown_to_html_in_output(output_dir):
                 md_handler = MarkdownFileHandler(md_file_path)
                 item = md_handler.get_item()
 
-                # Create a list of objects in HTML format
-                html_content = "<ul>\n"
+                # Create a series of divs instead of ul/li
+                html_content = ""
                 for attribute, value in item.__dict__.items():
-                    html_content += f"  <li>{attribute}: {value}</li>\n"
-                html_content += "</ul>\n"
+                    html_content += f"<div>{attribute}: {value}</div>\n"
                 
                 # Write the HTML content to a new .html file
                 with open(html_file_path, 'w', encoding='utf-8') as html_file:
