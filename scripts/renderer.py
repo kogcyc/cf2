@@ -2,20 +2,39 @@ import os
 import shutil
 from markdownfilehandler import MarkdownFileHandler  # Import the class we defined
 
-def copy_content_to_output(root_dir):
-    content_dir = os.path.join(root_dir, 'content')
-    output_dir = os.path.join(root_dir, 'public')
+def copy_markdown_files(start_dir):
+    # Define the 'built' directory path at the same level as the given directory
+    built_dir = os.path.join(os.path.dirname(start_dir), 'built')
     
-    # Step 3: Copy all content from content to output
-    if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)  # Clear output directory if it exists
-    shutil.copytree(content_dir, output_dir)
+    # Remove the 'built' directory if it exists
+    if os.path.exists(built_dir):
+        shutil.rmtree(built_dir)
     
-    return output_dir
+    # Recreate the 'built' directory
+    os.makedirs(built_dir)
+    
+    # Loop through all files in the given directory and its subdirectories
+    for root, dirs, files in os.walk(start_dir):
+        for file in files:
+            if file.endswith('.md'):
+                # Create the relative path to preserve the directory structure
+                relative_path = os.path.relpath(root, start_dir)
+                
+                # Destination directory in the 'built' folder
+                dest_dir = os.path.join(built_dir, relative_path)
+                
+                # Create the destination directory if it doesn't exist
+                os.makedirs(dest_dir, exist_ok=True)
+                
+                # Copy each .md file to the appropriate location in 'built' directory
+                src_file = os.path.join(root, file)
+                shutil.copy(src_file, dest_dir)
+    
+    print(f"copied all .md files from {start_dir} to {built_dir}")
 
-def convert_markdown_to_html_in_output(output_dir):
+def convert_markdown_to_html_in_output(built_dir):
     # Step 4: Move to output directory and convert .md to .html
-    for subdir, _, files in os.walk(output_dir):
+    for subdir, _, files in os.walk(built_dir):
         for file in files:
             if file.endswith('.md'):
                 md_file_path = os.path.join(subdir, file)
@@ -37,15 +56,10 @@ def convert_markdown_to_html_in_output(output_dir):
                 # Optionally, delete the original .md file
                 os.remove(md_file_path)
 
-def static_site_generator():
-    # Step 1: Start at the root directory
-    root_dir = os.getcwd()  # Get the current working directory
-    
-    # Step 2: Go to root/content dir
-    output_dir = copy_content_to_output(root_dir)
-    
-    # Step 4: Convert .md files in the output directory to .html
-    convert_markdown_to_html_in_output(output_dir)
+    print(f"rendered all .md files in {built_dir} into HTML")
 
-if __name__ == "__main__":
-    static_site_generator()
+# Example usage
+start_dir = './content'  # Replace with the actual directory
+built_dir = './built'
+copy_markdown_files(start_dir)
+convert_markdown_to_html_in_output("./built")
