@@ -15,7 +15,7 @@
 </div>
 
 <div id="index_content">
-<h1>phew</h1>
+{content}
 </div>
 
 </body>
