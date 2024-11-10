@@ -1,0 +1,5 @@
+{
+    "root_directory": "root",
+    "build_directory": "build",
+    "static_directory": "static"
+}

@@ -1,0 +1,52 @@
+{                                                                         
+     'filename': 'pagr2.md',                                               
+     'content': 'ciao',                                                    
+     'path': 'root/pages',                                                 
+     'title': 'Page Two',                                                  
+     'collections': None                                                   
+}  
+
+
+let's say that I want to use this structure:
+
+{                                                                         
+     'filename': 'pagr2.md',                                               
+     'content': 'ciao',                                                    
+     'path': 'root/pages',                                                 
+     'title': 'Page Two',                                                  
+     'collections': None                                                   
+}  
+
+as my context
+
+but I want to send along a fragement of tags that look like this:
+
+<div class="collections">
+<div class="content">{content}</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+context = {
+'filename': 'pagr2.md',
+'content': 'ciao',
+'path': 'root/pages',
+'title': 'Page Two',
+'collections': None,
+'path_paragraph': '''
+<p>Value: {{ path }}</p>
+'''
+}
